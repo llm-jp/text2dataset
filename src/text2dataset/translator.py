@@ -54,7 +54,8 @@ if __name__ == "__main__":
     model_id = "google/gemma-2-9b-it"
     tensor_parallel_size = 1
     pipeline_parallel_size = 1
-    translator = MockTranslator(model_id, tensor_parallel_size, pipeline_parallel_size)
-    text_list = ["Hello, how are you?"]
+    #translator = MockTranslator(model_id, tensor_parallel_size, pipeline_parallel_size)
+    translator = Translator(model_id, tensor_parallel_size, pipeline_parallel_size)
+    text_list = ["Hello, how are you?", "“Be yourself; everyone else is already taken.”"]
     translated = translator.translate(text_list)
     print(translated)
