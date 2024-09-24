@@ -1,6 +1,5 @@
 [project]
 name = "text2dataset"
-version = "0.1.6"
 description = "Easily turn large English text datasets into Japanese text datasets using open LLMs"
 authors = [
     { name = "speed1313", email = "speedtry13@icloud.com" }
@@ -14,6 +13,10 @@ dependencies = [
 readme = "README.md"
 requires-python = ">= 3.12.1"
 license = {file = "LICENSE"}
+
+dynamic = [
+    "version"
+]
 
 [project.urls]
 Repository = "https://github.com/llm-jp/text2dataset"
