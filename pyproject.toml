@@ -28,6 +28,10 @@ text2dataset = "text2dataset.main:main"
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[tool.hatch.version]
+path = "src/text2dataset/_version.py"
+
+
 [tool.hatch.build]
 exclude = [
   "/.*",
