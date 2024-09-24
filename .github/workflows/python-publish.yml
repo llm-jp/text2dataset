@@ -5,6 +5,9 @@ on:
     tags:
       - "v[0123456789].*"
 
+permissions:
+  id-token: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
