@@ -70,8 +70,6 @@ print("\n".join(ds["quote_ja"][:5]))
   - Currently, only one model is used for inference. This can be improved by using DataParallel. If you know how to do this with vLLM, please let me know or Pull Request.
 
 
-
-
 ## References
 - https://github.com/vllm-project/vllm
 - https://github.com/rom1504/img2dataset
