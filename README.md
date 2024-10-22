@@ -45,10 +45,13 @@ $ python src/text2dataset/main.py \
 ```
 
 Using the [`llm-jp/llm-jp-3-3.7b-instruct`](https://huggingface.co/llm-jp/llm-jp-3-3.7b-instruct) model on an A100 GPU, 2508 English quotes were translated into Japanese in just 21 seconds.
+
+<figure>
+  <img src="images/english_quotes_ja.png" width="50%">
+  <figcaption> Fig: Japanese translation of the <a href="https://huggingface.co/datasets/Abirate/english_quotes">Abirate/english_quotes</a> dataset using the  <a href="https://huggingface.co/llm-jp/llm-jp-3-3.7b-instruct">llm-jp/llm-jp-3-3.7b-instruct</a> model. </figcaption>
+</figure>
+
 The result dataset is available at [speed/english_quotes_ja](https://huggingface.co/datasets/speed/english_quotes).
-
-![english_quotes](images/english_quotes_ja.png)
-
 
 ### Paraphrasing
 You can also use text2dataset to paraphrase texts by changing the prompt template with specifying the `prompt_template_path` parameter.
@@ -65,9 +68,13 @@ $ python src/text2dataset/main.py \
     --output_format json \
     --prompt_template_path config/paraphrase.yaml
 ```
-The result dataset is available at [speed/english_quotes_paraphrase](https://huggingface.co/datasets/speed/english_quotes_paraphrase).
 
-![english_quotes](images/english_quotes_paraphrase.png)
+<figure>
+  <img src="images/english_quotes_paraphrase.png" width="50%">
+  <figcaption> Fig: Paraphrase of the <a href="https://huggingface.co/datasets/Abirate/english_quotes">Abirate/english_quotes</a> dataset using the  <a href="https://huggingface.co/google/gemma-2-2b-it">google/gemma-2-2b-it/</a> model. </figcaption>
+</figure>
+
+The result dataset is available at [speed/english_quotes_paraphrase](https://huggingface.co/datasets/speed/english_quotes_paraphrase).
 
 ## Areas for Improvement
 - Data Paarallel Inference:
