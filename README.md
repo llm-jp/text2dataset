@@ -3,7 +3,12 @@
 
 Easily turn large English text datasets into Japanese text datasets using open LLMs.
 
-A tool for converting a datasets.Dataset by translating the data in the "txt" column using Open LLM like gemma2 with vLLM, and adding a new "txt_ja" column (translated text in Japanese).
+<figure>
+  <img src="images/english_quotes_ja.png" width="50%">
+  <figcaption> Japanese translation of the <a href="https://huggingface.co/datasets/Abirate/english_quotes">Abirate/english_quotes</a> dataset using the  <a href="https://huggingface.co/llm-jp/llm-jp-3-3.7b-instruct">llm-jp/llm-jp-3-3.7b-instruct</a> model. </figcaption>
+</figure>
+
+text2dataset is a tool for converting a datasets.Dataset by translating the data in the "txt" column using Open LLM like gemma2 with vLLM, and adding a new "txt_ja" column (translated text in Japanese).
 This tool is inspired by [img2dataset](https://github.com/rom1504/img2dataset).
 
 ## Features
@@ -69,12 +74,20 @@ The result dataset is available at [speed/english_quotes_paraphrase](https://hug
 
 # Development
 
+## Contribution
+Welcome to any contributions!
+If you have any questions or suggestions, please feel free to open an issue or Pull Request.
+
 ## PyPI Release
 ```bash
 git tag -a v0.x.x -m "version 0.x.x"
 git push origin --tags
 ```
-
+## Lint and Format
+```bash
+$ rye lint
+$ rye format
+```
 
 ## References
 - https://github.com/vllm-project/vllm
