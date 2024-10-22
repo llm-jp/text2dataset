@@ -1,25 +1,29 @@
 from vllm import LLM, SamplingParams
 
 
-def build_prompt(passage: str) -> str:
+def build_prompt(template: str, passage: str | None) -> str:
     if passage is None:
         return ""
     passage = passage.strip().replace("\n", "")
-    passage = f"""
-You are an excellent English-Japanese translator. Please translate the following sentence into Japanese.
-You must output only the translation.
+    return template.format(passage=passage).strip()
 
-Sentence: {passage}
 
-Translation:
-""".strip()
-
-    return passage
+def test_build_prompt():
+    template = "Translate the following text: {passage}"
+    passage = "Hello, how are you?"
+    prompt = build_prompt(template, passage)
+    assert prompt == "Translate the following text: Hello, how are you?"
 
 
 class Translator:
+    """Translator class obtains a vLLM's LLM engine internally."""
+
     def __init__(
-        self, model_id: str, tensor_parallel_size: int, pipeline_parallel_size: int
+        self,
+        model_id: str,
+        tensor_parallel_size: int,
+        pipeline_parallel_size: int,
+        template: str = "You are an excellent English-Japanese translator. Please translate the following sentence into Japanese.\nYou must output only the translation.\nSentence: {passage}\nTranslation:",
     ):
         self.llm = LLM(
             model=model_id,
@@ -27,10 +31,11 @@ class Translator:
             tensor_parallel_size=tensor_parallel_size,
             pipeline_parallel_size=pipeline_parallel_size,
         )
+        self.template = template
 
     def translate(self, text_list: list[str]) -> list[str]:
         sampling_params = SamplingParams(temperature=0.8, top_p=0.95, max_tokens=200)
-        prompts = [build_prompt(t) for t in text_list]
+        prompts = [build_prompt(self.template, t) for t in text_list]
         outputs = self.llm.generate(prompts, sampling_params)
         generated_texts = [output.outputs[0].text for output in outputs]
         translated = [
@@ -42,7 +47,11 @@ class Translator:
 
 class MockTranslator:
     def __init__(
-        self, model_id: str, tensor_parallel_size: int, pipeline_parallel_size: int
+        self,
+        model_id: str,
+        tensor_parallel_size: int,
+        pipeline_parallel_size: int,
+        template: str,
     ):
         pass
 
@@ -51,7 +60,7 @@ class MockTranslator:
 
 
 if __name__ == "__main__":
-    model_id = "google/gemma-2-9b-it"
+    model_id = "llm-jp/llm-jp-3-3.7b-instruct"
     tensor_parallel_size = 1
     pipeline_parallel_size = 1
     # translator = MockTranslator(model_id, tensor_parallel_size, pipeline_parallel_size)

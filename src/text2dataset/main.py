@@ -12,6 +12,7 @@ import json
 from text2dataset.writer import write_shard
 from text2dataset.utils import State
 from text2dataset.reader import create_dataset
+import yaml
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(
@@ -39,6 +40,7 @@ logging.basicConfig(
 @click.option("--resume_from_checkpoint", type=bool, default=False)
 @click.option("--use_wandb", type=bool, default=False)
 @click.option("--wandb_project", type=str, default="llm-translator")
+@click.option("--prompt_template_path", type=str, default="config/prompt.yaml")
 def main(
     model_id: str,
     batch_size: int,
@@ -57,6 +59,7 @@ def main(
     resume_from_checkpoint: bool,
     use_wandb: bool,
     wandb_project: str,
+    prompt_template_path: str,
 ):
     # Text in source_column of the Dataset will be translated into Japanese.
     state = State(0, 0, 0)
@@ -85,9 +88,12 @@ def main(
     if use_wandb:
         wandb.init(project=wandb_project)
 
-    # TODO: Replace MockTranslator with your own translator
-    # translator = MockTranslator(model_id, tensor_parallel_size, pipeline_parallel_size)
-    translator = Translator(model_id, tensor_parallel_size, pipeline_parallel_size)
+    with open(prompt_template_path) as f:
+        data = yaml.safe_load(f)
+        template = data["prompt"]
+    translator = Translator(
+        model_id, tensor_parallel_size, pipeline_parallel_size, template
+    )
 
     dataset_buffer = Dataset.from_dict({})
 

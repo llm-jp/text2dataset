@@ -9,6 +9,7 @@ dependencies = [
     "vllm>=0.6.1",
     "datasets>=3.0.0",
     "wandb>=0.18.0",
+    "transformers==4.45.2",
 ]
 readme = "README.md"
 requires-python = ">= 3.12.1"
@@ -54,6 +55,7 @@ dev-dependencies = [
     "ruff>=0.6.4",
     "mypy>=1.11.2",
     "wheel>=0.44.0",
+    "pytest>=8.3.3",
 ]
 
 
