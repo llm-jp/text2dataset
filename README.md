@@ -5,7 +5,7 @@ Easily turn large English text datasets into Japanese text datasets using open L
 
 <figure>
   <img src="images/english_quotes_ja.png" width="50%">
-  <figcaption> Japanese translation of the <a href="https://huggingface.co/datasets/Abirate/english_quotes">Abirate/english_quotes</a> dataset using the  <a href="https://huggingface.co/llm-jp/llm-jp-3-3.7b-instruct">llm-jp/llm-jp-3-3.7b-instruct</a> model. </figcaption>
+  <figcaption> Fig: Japanese translation of the <a href="https://huggingface.co/datasets/Abirate/english_quotes">Abirate/english_quotes</a> dataset using the  <a href="https://huggingface.co/llm-jp/llm-jp-3-3.7b-instruct">llm-jp/llm-jp-3-3.7b-instruct</a> model. </figcaption>
 </figure>
 
 text2dataset is a tool for converting a datasets.Dataset by translating the data in the "txt" column using Open LLM like gemma2 with vLLM, and adding a new "txt_ja" column (translated text in Japanese).
