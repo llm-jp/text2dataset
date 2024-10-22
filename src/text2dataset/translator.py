@@ -24,6 +24,9 @@ class Translator:
         tensor_parallel_size: int,
         pipeline_parallel_size: int,
         template: str = "You are an excellent English-Japanese translator. Please translate the following sentence into Japanese.\nYou must output only the translation.\nSentence: {passage}\nTranslation:",
+        temperature: float = 0.8,
+        top_p: float = 0.95,
+        max_tokens: int = 200,
     ):
         self.llm = LLM(
             model=model_id,
@@ -32,9 +35,14 @@ class Translator:
             pipeline_parallel_size=pipeline_parallel_size,
         )
         self.template = template
+        self.temperature = temperature
+        self.top_p = top_p
+        self.max_tokens = max_tokens
 
     def translate(self, text_list: list[str]) -> list[str]:
-        sampling_params = SamplingParams(temperature=0.8, top_p=0.95, max_tokens=200)
+        sampling_params = SamplingParams(
+            temperature=self.temperature, top_p=self.top_p, max_tokens=self.max_tokens
+        )
         prompts = [build_prompt(self.template, t) for t in text_list]
         outputs = self.llm.generate(prompts, sampling_params)
         generated_texts = [output.outputs[0].text for output in outputs]

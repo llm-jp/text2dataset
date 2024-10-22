@@ -1,0 +1,4 @@
+prompt: |
+  Please paraphrase the following text in English while preserving its original meaning. Ensure that the paraphrase is clear, natural, and well-structured. You must only output the paraphrase.
+  Sentence: {passage}
+  Paraphrase:

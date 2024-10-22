@@ -23,24 +23,26 @@ logging.basicConfig(
 
 
 @click.command()
-@click.option("--model_id", type=str, default="facebook/opt-125m")
+@click.option("--model_id", type=str, default="llm-jp/llm-jp-3-3.7b-instruct")
 @click.option("--batch_size", type=int, default=1024)
 @click.option("--tensor_parallel_size", type=int, default=1)
 @click.option("--pipeline_parallel_size", type=int, default=1)
 @click.option("--gpu_id", type=int, default=0)
-@click.option("--input_format", type=str, default="webdataset")
-@click.option("--input_path", type=str, default="/model/i-sugiura/cc12m_v2/00000.tar")
+@click.option("--input_path", type=str, default="data/english_quotes.json")
 @click.option("--source_column", type=str, default="txt")
 @click.option("--target_column", type=str, default="txt_ja")
 @click.option("--push_to_hub", type=bool, default=False)
-@click.option("--push_to_hub_path", type=str, default="speed/cc12m_v2_ja")
-@click.option("--output_dir", type=str, default="results")
-@click.option("--output_format", type=str, default="parquet")
+@click.option("--push_to_hub_path", type=str, default="speed/english_quotes")
+@click.option("--output_dir", type=str, default="data/english_quotes_ja")
+@click.option("--output_format", type=str, default="json")
 @click.option("--number_sample_per_shard", type=int, default=1000)
 @click.option("--resume_from_checkpoint", type=bool, default=False)
 @click.option("--use_wandb", type=bool, default=False)
-@click.option("--wandb_project", type=str, default="llm-translator")
+@click.option("--wandb_project", type=str, default="text2dataset")
 @click.option("--prompt_template_path", type=str, default="config/prompt.yaml")
+@click.option("--temperature", type=float, default=0.8)
+@click.option("--top_p", type=float, default=0.95)
+@click.option("--max_tokens", type=int, default=200)
 def main(
     model_id: str,
     batch_size: int,
@@ -50,7 +52,6 @@ def main(
     gpu_id: int,
     source_column: str,
     target_column: str,
-    input_format: str,
     input_path: str,
     push_to_hub: bool,
     push_to_hub_path: str,
@@ -60,6 +61,9 @@ def main(
     use_wandb: bool,
     wandb_project: str,
     prompt_template_path: str,
+    temperature: float,
+    top_p: float,
+    max_tokens: int,
 ):
     # Text in source_column of the Dataset will be translated into Japanese.
     state = State(0, 0, 0)
@@ -81,7 +85,7 @@ def main(
 
     os.makedirs(output_dir, exist_ok=True)
     state_path = os.path.join(output_dir, "state.jsonl")
-    ds = create_dataset(input_format, input_path, state)
+    ds = create_dataset(input_path, state)
     # batch dataloader
     data_loader = ds["train"].batch(batch_size=batch_size)
 
@@ -92,7 +96,13 @@ def main(
         data = yaml.safe_load(f)
         template = data["prompt"]
     translator = Translator(
-        model_id, tensor_parallel_size, pipeline_parallel_size, template
+        model_id,
+        tensor_parallel_size,
+        pipeline_parallel_size,
+        template,
+        temperature,
+        top_p,
+        max_tokens,
     )
 
     dataset_buffer = Dataset.from_dict({})
@@ -148,9 +158,15 @@ def main(
         state.save_state(state_path)
 
     if push_to_hub:
-        if output_format == "jsonl":
+        if output_format == "jsonl" or output_format == "json":
+            # jsonl without state.jsonl
+            files = os.listdir(output_dir)
+            if "state.jsonl" in files:
+                files.remove("state.jsonl")
+            # Sort files by shard id to keep the order.
+            files.sort(key=lambda x: int(x.split(".")[0]))
             translated_ds = load_dataset(
-                "json", data_files=os.path.join(output_dir, "*.jsonl")
+                "json", data_files=[os.path.join(output_dir, f) for f in files]
             )
         elif output_format == "parquet":
             translated_ds = load_dataset(
