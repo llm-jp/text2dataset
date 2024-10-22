@@ -24,22 +24,50 @@ logging.basicConfig(
 
 @click.command()
 @click.option("--model_id", type=str, default="llm-jp/llm-jp-3-3.7b-instruct")
-@click.option("--batch_size", type=int, default=1024)
+@click.option(
+    "--batch_size", type=int, default=1024, help="Batch size for vLLM inference."
+)
 @click.option("--tensor_parallel_size", type=int, default=1)
 @click.option("--pipeline_parallel_size", type=int, default=1)
 @click.option("--gpu_id", type=int, default=0)
-@click.option("--input_path", type=str, default="data/english_quotes.json")
-@click.option("--source_column", type=str, default="txt")
-@click.option("--target_column", type=str, default="txt_ja")
+@click.option(
+    "--input_path",
+    type=str,
+    default="data/english_quotes.json",
+    help="Local file path or Hugging Face dataset name.",
+)
+@click.option(
+    "--source_column",
+    type=str,
+    default="txt",
+    help="Existing column name in the dataset to be prompted.",
+)
+@click.option(
+    "--target_column",
+    type=str,
+    default="txt_ja",
+    help="New column name in the dataset to store the generated text.",
+)
 @click.option("--push_to_hub", type=bool, default=False)
 @click.option("--push_to_hub_path", type=str, default="speed/english_quotes")
 @click.option("--output_dir", type=str, default="data/english_quotes_ja")
 @click.option("--output_format", type=str, default="json")
 @click.option("--number_sample_per_shard", type=int, default=1000)
-@click.option("--resume_from_checkpoint", type=bool, default=False)
+@click.option(
+    "--resume_from_checkpoint",
+    type=bool,
+    default=False,
+    help="Resume from the last checkpoint.",
+)
 @click.option("--use_wandb", type=bool, default=False)
 @click.option("--wandb_project", type=str, default="text2dataset")
-@click.option("--prompt_template_path", type=str, default="config/prompt.yaml")
+@click.option("--wandb_run_name", type=str, default="")
+@click.option(
+    "--prompt_template_path",
+    type=str,
+    default="config/prompt.yaml",
+    help="Path to the prompt template.",
+)
 @click.option("--temperature", type=float, default=0.8)
 @click.option("--top_p", type=float, default=0.95)
 @click.option("--max_tokens", type=int, default=200)
@@ -60,6 +88,7 @@ def main(
     resume_from_checkpoint: bool,
     use_wandb: bool,
     wandb_project: str,
+    wandb_run_name: str,
     prompt_template_path: str,
     temperature: float,
     top_p: float,
@@ -90,7 +119,9 @@ def main(
     data_loader = ds["train"].batch(batch_size=batch_size)
 
     if use_wandb:
-        wandb.init(project=wandb_project)
+        config_parameters = dict(locals())
+        config_parameters.pop("use_wandb")
+        wandb.init(project=wandb_project, name=wandb_run_name, config=config_parameters)
 
     with open(prompt_template_path) as f:
         data = yaml.safe_load(f)

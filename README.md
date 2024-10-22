@@ -76,6 +76,24 @@ $ python src/text2dataset/main.py \
 
 The result dataset is available at [speed/english_quotes_paraphrase](https://huggingface.co/datasets/speed/english_quotes_paraphrase).
 
+
+### Translation of neuralwork/arxiver dataset
+```bash
+$ python src/text2dataset/main.py \
+    --model_id google/gemma-2-2b-it \
+    --batch_size 16384 \
+    --input_path neuralwork/arxiver \
+    --source_column abstract \
+    --target_column abstract_ja \
+    --push_to_hub True \
+    --push_to_hub_path speed/arxiver_ja \
+    --output_dir data/arxiver_ja \
+    --output_format json \
+    --use_wandb True \
+    --wandb_run_name arxiver
+```
+
+
 ## Areas for Improvement
 - Data Paarallel Inference:
   - Currently, only one model is used for inference. This can be improved by using DataParallel. If you know how to do this with vLLM, please let me know or Pull Request.
