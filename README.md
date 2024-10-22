@@ -73,18 +73,18 @@ The result dataset is available at [speed/english_quotes_paraphrase](https://hug
 - Data Paarallel Inference:
   - Currently, only one model is used for inference. This can be improved by using DataParallel. If you know how to do this with vLLM, please let me know or Pull Request.
 
-# Development
+## Development
 
-## Contribution
+### Contribution
 Welcome to any contributions!
 If you have any questions or suggestions, please feel free to open an issue or Pull Request.
 
-## PyPI Release
+### PyPI Release
 ```bash
 git tag -a v0.x.x -m "version 0.x.x"
 git push origin --tags
 ```
-## Lint and Format
+### Lint and Format
 ```bash
 $ rye lint
 $ rye format
