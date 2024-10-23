@@ -9,7 +9,7 @@ Easily turn large English text datasets into Japanese text datasets using open L
 </figure>
 
 ## Overview
-text2dataset is a tool for converting a datasets.Dataset by translating the data in the "txt" column using Open LLM like gemma2 with vLLM, and adding a new "txt_ja" column (translated text in Japanese).
+text2dataset is a tool for converting a datasets.Dataset by translating the data in the "txt" column using Open LLM like gemma2 with vLLM, and adding a new "txt_ja" column (translated text in Japanese). You can also use text2dataset to paraphrase texts by changing the prompt template.
 This tool is inspired by [img2dataset](https://github.com/rom1504/img2dataset).
 
 ## Features
@@ -77,7 +77,10 @@ $ python src/text2dataset/main.py \
 The result dataset is available at [speed/english_quotes_paraphrase](https://huggingface.co/datasets/speed/english_quotes_paraphrase).
 
 
-### Translation of neuralwork/arxiver dataset
+### Translation of [neuralwork/arxiver](https://huggingface.co/datasets/neuralwork/arxiver) dataset
+You can directly translate datasets in Hugging Face by specifying the path name in `input_path`.
+
+In this example, the `abstract` column of the `neuralwork/arxiver` dataset is translated by specifying the `input_path` as `neuralwork/arxiver` and the `source_column` parameter as `abstract`.
 ```bash
 $ python src/text2dataset/main.py \
     --model_id google/gemma-2-2b-it \
@@ -93,10 +96,34 @@ $ python src/text2dataset/main.py \
     --wandb_run_name arxiver
 ```
 
+`neuralwork/arxiver` dataset contains 138k rows of abstracts, and it took 2.5 hours to translate them into Japanese using the `google/gemma-2-2b-it` model on a A100 GPU. The result dataset is available at [speed/arxiver_ja](https://huggingface.co/datasets/speed/arxiver_ja).
+
+<figure>
+  <img src="images/arxiver_ja.png" width="50%">
+  <figcaption> Fig: Translation of the <a href="https://huggingface.co/datasets/neuralwork/arxiver">neuralwork/arxiver</a> dataset using the  <a href="https://huggingface.co/google/gemma-2-2b-it">google/gemma-2-2b-it/</a> model. </figcaption>
+</figure>
+
+
+<figure>
+  <img src="images/arxiver_wandb.png" width="50%">
+  <figcaption> Fig: Wandb logs for the translation of the <a href="https://huggingface.co/datasets/neuralwork/arxiver">neuralwork/arxiver</a> dataset using the  <a href="https://huggingface.co/google/gemma-2-2b-it">google/gemma-2-2b-it/</a> model. </figcaption>
+</figure>
+
+
+
+## Tips
+
+- Translation on Multiple GPUs in Parallel
+
+To run translations on multiple GPUs concurrently, split the input dataset into several shards (directories) and execute the translation for each shard in parallel. Remember to set the gpu_id parameter to the corresponding GPU ID for each shard.
+
 
 ## Areas for Improvement
-- Data Paarallel Inference:
-  - Currently, only one model is used for inference. This can be improved by using DataParallel. If you know how to do this with vLLM, please let me know or Pull Request.
+
+### Data Parallel Inference
+
+Currently, we need to manually split the input dataset into shards and run the translation for each shard in parallel to utilize multiple GPUs. It would be great to have a built-in feature to automatically split the input dataset into shards and run the translation on multiple GPUs in parallel.
+If you have any ideas or suggestions, please feel free to open an issue or Pull Request.
 
 ## Development
 
@@ -114,6 +141,7 @@ git push origin --tags
 $ rye lint
 $ rye format
 ```
+
 
 ## References
 - https://github.com/vllm-project/vllm
