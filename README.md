@@ -21,6 +21,8 @@ This tool is inspired by [img2dataset](https://github.com/rom1504/img2dataset).
   - By setting the `use_wandb` parameter, the metrics such as examples_per_sec and count can be logged to wandb.
 - Push to Hugging Face Hub:
   - By setting the `push_to_hub` parameter, the translated dataset can be pushed to the Hugging Face Hub.
+- Custom Prompt Template:
+  - By specifying the `prompt_template_path` parameter, you can customize the prompt template for any translation task (e.g., paraphrasing, summarization etc.).
 
 ## Installation
 ```bash
