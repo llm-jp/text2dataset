@@ -4,7 +4,7 @@
 Easily turn large English text datasets into Japanese text datasets using open LLMs.
 
 <figure>
-  <img src="images/english_quotes_ja.png" width="50%">
+  <img src="images/overview.png" width="100%">
   <figcaption> Fig: Japanese translation of the <a href="https://huggingface.co/datasets/Abirate/english_quotes">Abirate/english_quotes</a> dataset using the  <a href="https://huggingface.co/llm-jp/llm-jp-3-3.7b-instruct">llm-jp/llm-jp-3-3.7b-instruct</a> model. </figcaption>
 </figure>
 
