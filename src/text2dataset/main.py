@@ -6,7 +6,7 @@ from datasets import Dataset
 import wandb
 import time
 
-from text2dataset.translator import Translator
+from text2dataset.translator import Translator, DeeplTranslator, OpenAIAPITranslator
 import logging
 import json
 from text2dataset.writer import write_shard
@@ -23,7 +23,12 @@ logging.basicConfig(
 
 
 @click.command()
-@click.option("--model_id", type=str, default="llm-jp/llm-jp-3-3.7b-instruct")
+@click.option(
+    "--model_id",
+    type=str,
+    default="llm-jp/llm-jp-3-3.7b-instruct",
+    help="Model name. e.g. llm-jp/llm-jp-3-3.7b-instruct. If you want to use OpenAI API, specify the model name like 'gpt-4o-mini-2024-07-18'. If you want to use DeepL API, specify 'deepl'.",
+)
 @click.option(
     "--batch_size", type=int, default=1024, help="Batch size for vLLM inference."
 )
@@ -71,6 +76,12 @@ logging.basicConfig(
 @click.option("--temperature", type=float, default=0.8)
 @click.option("--top_p", type=float, default=0.95)
 @click.option("--max_tokens", type=int, default=200)
+@click.option(
+    "--target_lang",
+    type=str,
+    default="ja",
+    help="Target language for translation. This is used only for DeepL API.",
+)
 def main(
     model_id: str,
     batch_size: int,
@@ -93,6 +104,7 @@ def main(
     temperature: float,
     top_p: float,
     max_tokens: int,
+    target_lang: str,
 ):
     # Text in source_column of the Dataset will be translated into Japanese.
     state = State(0, 0, 0)
@@ -126,15 +138,23 @@ def main(
     with open(prompt_template_path) as f:
         data = yaml.safe_load(f)
         template = data["prompt"]
-    translator = Translator(
-        model_id,
-        tensor_parallel_size,
-        pipeline_parallel_size,
-        template,
-        temperature,
-        top_p,
-        max_tokens,
-    )
+
+    if model_id == "deepl":
+        translator = DeeplTranslator(target_lang)
+    elif model_id in ["gpt-4o-mini-2024-07-18", "gpt-4o-2024-07-18"]:
+        translator = OpenAIAPITranslator(
+            model_id, template, temperature, top_p, max_tokens
+        )
+    else:
+        translator = Translator(
+            model_id,
+            tensor_parallel_size,
+            pipeline_parallel_size,
+            template,
+            temperature,
+            top_p,
+            max_tokens,
+        )
 
     dataset_buffer = Dataset.from_dict({})
 
