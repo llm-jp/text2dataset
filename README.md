@@ -128,16 +128,16 @@ To run translations on multiple GPUs concurrently, split the input dataset into 
 Currently, we need to manually split the input dataset into shards and run the translation for each shard in parallel to utilize multiple GPUs. It would be great to have a built-in feature to automatically split the input dataset into shards and run the translation on multiple GPUs in parallel.
 If you have any ideas or suggestions, please feel free to open an issue or Pull Request.
 
+## Note
+
+When using this tool, please pay attention to the license of both the dataset being translated and the LLM you use.
+
+
 ## Development
 
 ### Contribution
 Welcome to any contributions!
 If you have any questions or suggestions, please feel free to open an issue or Pull Request.
-
-## Note
-
-When using this tool, please pay attention to the license of both the dataset being translated and the LLM you use.
-
 
 ### PyPI Release
 ```bash
