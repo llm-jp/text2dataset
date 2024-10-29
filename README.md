@@ -133,6 +133,11 @@ If you have any ideas or suggestions, please feel free to open an issue or Pull 
 Welcome to any contributions!
 If you have any questions or suggestions, please feel free to open an issue or Pull Request.
 
+## Note
+
+When using this tool, please pay attention to the license of both the dataset being translated and the LLM you use.
+
+
 ### PyPI Release
 ```bash
 git tag -a v0.x.x -m "version 0.x.x"
