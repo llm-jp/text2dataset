@@ -27,6 +27,7 @@ This tool is inspired by [img2dataset](https://github.com/rom1504/img2dataset).
 ## Installation
 ```bash
 $ git clone https://github.com/llm-jp/text2dataset.git
+$ cd text2dataset
 $ rye sync
 ```
 
