@@ -82,6 +82,12 @@ logging.basicConfig(
     default="ja",
     help="Target language for translation. This is used only for DeepL API.",
 )
+@click.option(
+    "--keep_columns",
+    type=str,
+    default="txt",
+    help="Columns to keep in the output dataset. Specify the column names separated by comma.",
+)
 def main(
     model_id: str,
     batch_size: int,
@@ -105,6 +111,7 @@ def main(
     top_p: float,
     max_tokens: int,
     target_lang: str,
+    keep_columns: str,
 ):
     # Text in source_column of the Dataset will be translated into Japanese.
     state = State(0, 0, 0)
@@ -127,8 +134,10 @@ def main(
     os.makedirs(output_dir, exist_ok=True)
     state_path = os.path.join(output_dir, "state.jsonl")
     ds = create_dataset(input_path, state)
+    # keep only the specified columns
+    ds = ds.select_columns(keep_columns.split(","))
     # batch dataloader
-    data_loader = ds["train"].batch(batch_size=batch_size)
+    data_loader = ds.batch(batch_size=batch_size)
 
     if use_wandb:
         config_parameters = dict(locals())
