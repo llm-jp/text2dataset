@@ -5,7 +5,6 @@ authors = [
     { name = "speed1313", email = "speedtry13@icloud.com" }
 ]
 dependencies = [
-    "click>=8.1.7",
     "vllm>=0.6.1",
     "datasets>=3.0.0",
     "wandb>=0.18.0",
