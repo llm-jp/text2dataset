@@ -9,7 +9,11 @@ Easily turn large English text datasets into Japanese text datasets using open L
 </figure>
 
 ## Overview
-text2dataset is a tool for converting a datasets.Dataset by translating the data in the "txt" column using Open LLM like gemma2 with vLLM, and adding a new "txt_ja" column (translated text in Japanese). You can also use text2dataset to paraphrase texts by changing the prompt template.
+text2dataset is a tool designed to convert datasets by translating the data in the "txt" column using an Open LLM, such as gemma2 with vLLM, and adding a new column called "txt_ja" that contains the translated text in Japanese.
+
+By utilizing the fast LLM inference library [vLLM](https://github.com/vllm-project/vllm), this tool enables the fast translation of large English datasets into Japanese.
+You can also use text2dataset for any translation tasks (e.g. paraphrase) by modifying the prompt template accordingly.
+
 This tool is inspired by [img2dataset](https://github.com/rom1504/img2dataset).
 
 ## Features
